@@ -48,7 +48,7 @@ def get_info():
                 tel = result['tel']
                 code = result['id'][1:]
                 homepage = result['homePage']
-                depth2List.append([name, roadAddress, address, tel, homepage, detailBaseUrl + code])
+                depth2List.append([keyword,name, roadAddress, address, tel, homepage, detailBaseUrl + code])
         else:
             log('s',"끝")
 
