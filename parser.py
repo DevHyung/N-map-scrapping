@@ -27,9 +27,18 @@ def get_cookie_str(_cookie):
 
 def get_info():
     for pageIdx in range(1,lastPage+1):
-        html = requests.get(url.format(get_url_encode(keyword), 1), headers=headers)
+        log('s',"{} 페이지 추출중...".format(pageIdx))
+        html = requests.get(url.format(get_url_encode(keyword), pageIdx), headers=headers)
         jsonStr = json.loads(html.text)
-        results = jsonStr['result']['site']['list']
+        try:
+            results = jsonStr['result']['site']['list']
+        except:
+            log('e', '쿠키 유효기간 만기로 재갱신중')
+            headers['cookie'] = get_cookie()
+            log('s', "{} 페이지 추출중...".format(pageIdx))
+            html = requests.get(url.format(get_url_encode(keyword), pageIdx), headers=headers)
+            jsonStr = json.loads(html.text)
+            results = jsonStr['result']['site']['list']
         if len(results) != 0:
             for result in results:
                 name = result['name']
@@ -41,8 +50,9 @@ def get_info():
                 print(name)
                 #print([name, roadAddress, address, tel, homepage, detailBaseUrl + code])
         else:
-            print("끝")
+            log('s',"끝")
         time.sleep(random.randint(3,7))
+
 def log(tag, text):
 	# Info tag
 	if(tag == 'i'):
@@ -66,6 +76,7 @@ if __name__ == "__main__":
         if keyword == 'quit':
             break
         headers['cookie'] = get_cookie()
+        headers['cookie'] = 'asd'
 
         # get total cnt
         bs4 = BeautifulSoup(driver.page_source,'lxml')
