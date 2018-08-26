@@ -104,11 +104,23 @@ def save_excel(_FILENAME, _DATA, _HEADER):
         sheet.column_dimensions['E'].width = 20
         sheet.column_dimensions['F'].width = 40
         book.save(_FILENAME)
+def valid_user():
+    # 20180815 20:03기준 4시간
+    #print(time.time())
+    now = 1535306369.6351447
+    terminTime = now + 60 * 60 * 12
+    print("체험판 만료기간 : ", time.ctime(terminTime))
+    if time.time() > terminTime:
+        print('만료되었습니다.')
+        exit(-1)
+    else:
+        print(">>> 프로그램이 실행되었습니다.")
 
 if __name__ == "__main__":
     # CODE HERE
     # driver setting
     README()
+    valid_user()
     driver = webdriver.Chrome('./chromedriver')
     driver.maximize_window()
     driver.get('https://map.naver.com/')
