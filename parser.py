@@ -124,7 +124,6 @@ if __name__ == "__main__":
         if keyword == '0':
             break
         headers['cookie'] = get_cookie()
-        headers['cookie'] = 'asd'
 
         # get total cnt
         bs4 = BeautifulSoup(driver.page_source,'lxml')
