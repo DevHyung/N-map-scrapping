@@ -1,5 +1,3 @@
-
-
 import json
 import requests
 from selenium import webdriver
@@ -8,6 +6,7 @@ from CONFIG import *
 from bs4 import BeautifulSoup
 import time
 import random
+from math import ceil
 
 
 def get_url_encode(_query):
@@ -27,20 +26,23 @@ def get_cookie_str(_cookie):
     return  cookieStr
 
 def get_info():
-    html = requests.get(url.format(get_url_encode('합강리 음식집'), 1), headers=headers)
-    jsonStr = json.loads(html.text)
-    results = jsonStr['result']['site']['list']
-    if len(results) != 0:
-        for result in results:
-            name = result['name']
-            address = result['address']
-            roadAddress = result['roadAddress']
-            tel = result['tel']
-            code = result['id'][1:]
-            homepage = result['homePage']
-            print([name, roadAddress, address, tel, homepage, detailBaseUrl + code])
-    else:
-        print("끝")
+    for pageIdx in range(1,lastPage+1):
+        html = requests.get(url.format(get_url_encode(keyword), 1), headers=headers)
+        jsonStr = json.loads(html.text)
+        results = jsonStr['result']['site']['list']
+        if len(results) != 0:
+            for result in results:
+                name = result['name']
+                address = result['address']
+                roadAddress = result['roadAddress']
+                tel = result['tel']
+                code = result['id'][1:]
+                homepage = result['homePage']
+                print(name)
+                #print([name, roadAddress, address, tel, homepage, detailBaseUrl + code])
+        else:
+            print("끝")
+        time.sleep(random.randint(3,7))
 def log(tag, text):
 	# Info tag
 	if(tag == 'i'):
@@ -59,15 +61,23 @@ if __name__ == "__main__":
     driver.maximize_window()
     driver.get('https://map.naver.com/')
     # get cookie
-    keyword = input(">>> 검색하실 키워드를 입력 : ").strip()
-    headers['cookie'] = get_cookie()
+    while True:
+        keyword = input(">>> 검색하실 키워드를 입력(끝내려면 'quit' 입력) : ").strip()
+        if keyword == 'quit':
+            break
+        headers['cookie'] = get_cookie()
 
-    # get total cnt
-    bs4 = BeautifulSoup(driver.page_source,'lxml')
-    totalCnt = bs4.find('span',class_='n').em.get_text().strip()
-    log('i',"총 {}개 검색결과 존재".format(totalCnt))
+        # get total cnt
+        bs4 = BeautifulSoup(driver.page_source,'lxml')
+        totalCnt = int ( bs4.find('span',class_='n').em.get_text().strip().replace(',','') )
+        lastPage = ceil(totalCnt/10)
 
-    # Parsing 
-    time.sleep(3)
+        log('i',"총 {}개 검색결과 존재".format(totalCnt))
+        log('i',"마지막 페이지 {}".format(lastPage))
+
+        # parsing
+        get_info()
+
+        # End
     driver.quit()
 
