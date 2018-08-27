@@ -47,8 +47,9 @@ def get_info():
                 roadAddress = result['roadAddress']
                 tel = result['tel']
                 code = result['id'][1:]
+                category = result['category'][0] + " > " + result['category'][1]
                 homepage = result['homePage']
-                depth2List.append([keyword,name, roadAddress, address, tel, homepage, detailBaseUrl + code])
+                depth2List.append([keyword,category,name, roadAddress, address, tel, homepage, detailBaseUrl + code])
         else:
             log('s',"끝")
 
@@ -128,7 +129,7 @@ if __name__ == "__main__":
     FILENAME = input(">>> 저장 파일 *이름만* 적어주세요 ( 확장자 미포함 ) :") + '.xlsx'
     MIN = int ( input(">>> 페이지 딜레이 최소 정수값 : ") )
     MAX = int ( input(">>> 페이지 딜레이 최대 정수값 : ") )
-    HEADER = ['키워드','업소명', '도로명주소', '지번주소', '전화번호', '홈페이지1', '상세페이지']
+    HEADER = ['키워드','카테고리','업소명', '도로명주소', '지번주소', '전화번호', '홈페이지1', '상세페이지']
     save_excel(FILENAME,None,HEADER) # init
 
     while True:
