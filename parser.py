@@ -71,7 +71,7 @@ def get_info():
                 except:
                     homepage = ''
                 depth2List.append([keyword,category,name, roadAddress, address, tel, homepage, detailBaseUrl + code])
-        else:   
+        else:
             log('s',"끝")
 
         if len(depth2List) >= 50:
