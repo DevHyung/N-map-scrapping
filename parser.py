@@ -27,7 +27,7 @@ def get_cookie_str(_cookie):
 
 def get_info():
     depth2List = []
-    for pageIdx in range(1,lastPage+1):
+    for pageIdx in range(STARTPAGE,lastPage+1):
         log('s',"{} 페이지 추출중...".format(pageIdx))
         html = requests.get(url.format(get_url_encode(keyword), pageIdx), headers=headers)
         jsonStr = json.loads(html.text)
@@ -39,7 +39,13 @@ def get_info():
             log('s', "{} 페이지 추출중...".format(pageIdx))
             html = requests.get(url.format(get_url_encode(keyword), pageIdx), headers=headers)
             jsonStr = json.loads(html.text)
-            results = jsonStr['result']['site']['list']
+            try:
+                results = jsonStr['result']['site']['list']
+            except:
+                log('e','IP Ban 가능성이 의심되어 프로그램을 종료합니다.')
+                input("종료하시려면 아무키나 입력하세요 :")
+                save_excel(FILENAME, depth2List, None)  # init
+                exit(-1)
         if len(results) != 0:
             for result in results:
                 try:
@@ -96,8 +102,9 @@ def README():
     print("# 사용법 :")
     print("# 1. 저장 파일의 이름만 적는다 (기본 포맷은 xlsx 이며 확장자는 적지 않는다 ) ")
     print("#     1-1. 위에 적은 파일은 프로그램이 종료전까지 계속 데이터가 쌓인다")
-    print("# 2. 페이지 -> 페이지 파싱간의 딜레이 최소, 최대 정수값을 입력한다. ")
-    print("#     2-1. 예를들어 3,10을 입력하면 페이지간 딜레이가 3~10사이의 랜덤정수가 된다.")
+    print("# 2. 시작할 페이지 정수값을 입력하세요 ! 기본값은 1 ")
+    print("#     2-1. 페이지 -> 페이지 파싱간의 딜레이 최소, 최대 정수값을 입력한다.")
+    print("#     2-2. 예를들어 3,10을 입력하면 페이지간 딜레이가 3~10사이의 랜덤정수가 된다.")
     print("# 3. 검색할 키워드를 입력 한다. ")
     print("#     3-1. 끝내시려면 숫자 0을 입력하시고 엔터를 누르시면 됩니다.")
     print("#_____________________________________________________________________")
@@ -148,6 +155,7 @@ if __name__ == "__main__":
     driver.get('https://map.naver.com/')
     # get cookie
     FILENAME = input(">>> 저장 파일 *이름만* 적어주세요 ( 확장자 미포함 ) :") + '.xlsx'
+    STARTPAGE = int ( input(">>> 파싱 시작할 페이지 입력(기본1):"))
     MIN = int ( input(">>> 페이지 딜레이 최소 정수값 : ") )
     MAX = int ( input(">>> 페이지 딜레이 최대 정수값 : ") )
     HEADER = ['키워드','카테고리','업소명', '도로명주소', '지번주소', '전화번호', '홈페이지1', '상세페이지']
