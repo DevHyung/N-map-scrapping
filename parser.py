@@ -42,15 +42,36 @@ def get_info():
             results = jsonStr['result']['site']['list']
         if len(results) != 0:
             for result in results:
-                name = result['name']
-                address = result['address']
-                roadAddress = result['roadAddress']
-                tel = result['tel']
-                code = result['id'][1:]
-                category = result['category'][0] + " > " + result['category'][1]
-                homepage = result['homePage']
+                try:
+                    name = result['name']
+                except:
+                    name = ''
+                try:
+                    address = result['address']
+                except:
+                    address = ''
+                try:
+                    roadAddress = result['roadAddress']
+                except:
+                    roadAddress = ''
+                try:
+                    tel = result['tel']
+                except:
+                    tel = ''
+                try:
+                    code = result['id'][1:]
+                except:
+                    code = ''
+                try:
+                    category = result['category'][0] + " > " + result['category'][1]
+                except:
+                    category = ''
+                try:
+                    homepage = result['homePage']
+                except:
+                    homepage = ''
                 depth2List.append([keyword,category,name, roadAddress, address, tel, homepage, detailBaseUrl + code])
-        else:
+        else:   
             log('s',"끝")
 
         if len(depth2List) >= 50:
@@ -121,7 +142,7 @@ if __name__ == "__main__":
     # CODE HERE
     # driver setting
     README()
-    valid_user()
+    #valid_user()
     driver = webdriver.Chrome('./chromedriver')
     driver.maximize_window()
     driver.get('https://map.naver.com/')
