@@ -27,7 +27,7 @@ def get_cookie_str(_cookie):
 
 def get_info():
     depth2List = []
-    for pageIdx in range(STARTPAGE,lastPage+1):
+    for pageIdx in range(STARTPAGE,LASTPAGE+1):
         log('s',"{} 페이지 추출중...".format(pageIdx))
         html = requests.get(url.format(get_url_encode(keyword), pageIdx), headers=headers)
         jsonStr = json.loads(html.text)
@@ -155,7 +155,7 @@ if __name__ == "__main__":
     driver.get('https://map.naver.com/')
     # get cookie
     FILENAME = input(">>> 저장 파일 *이름만* 적어주세요 ( 확장자 미포함 ) :") + '.xlsx'
-    STARTPAGE = int ( input(">>> 파싱 시작할 페이지 입력(기본1):"))
+
     MIN = int ( input(">>> 페이지 딜레이 최소 정수값 : ") )
     MAX = int ( input(">>> 페이지 딜레이 최대 정수값 : ") )
     HEADER = ['키워드','카테고리','업소명', '도로명주소', '지번주소', '전화번호', '홈페이지1', '상세페이지']
@@ -174,6 +174,8 @@ if __name__ == "__main__":
 
         log('i',"총 {}개 검색결과 존재".format(totalCnt))
         log('i',"마지막 페이지 {}".format(lastPage))
+        STARTPAGE = int(input(">>> 파싱 시작할 페이지 입력(기본1):"))
+        LASTPAGE  = int(input(">>> 파싱 끝낼   페이지 입력(기본 {}):".format(lastPage)))
 
         # parsing
         get_info()
